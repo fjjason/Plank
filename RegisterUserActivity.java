@@ -16,51 +16,41 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.chen.hanlin.plank.instagramposthome.InstagramHome;
 
 
 public class RegisterUserActivity extends AppCompatActivity {
 
-    //DECLARE FIELDS
+    //setup view, firebase auth and progress bar
     EditText userEmailCreateEditText, userPassWordCreateEditText;
     LinearLayout createAccountBtn;
-
-    //FIREBASE AUTHENTICATION ID
+    ProgressDialog mProgressDialog;
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
-
-    //PROGRESS DIALOG
-    ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //set up view
         setContentView(R.layout.activity_register_user);
-
-
-        //ASSIGN ID'S
         userEmailCreateEditText = ( EditText ) findViewById(R.id.emailRegisterEditText);
         userPassWordCreateEditText = (EditText) findViewById(R.id.passwordRegisterEditText);
-
         createAccountBtn = ( LinearLayout) findViewById(R.id.createAccountSubmitBtn);
 
-        //PROGRESS DIALOG INSTANCE
+        //set progress bar and auth
         mProgressDialog = new ProgressDialog(this);
-
-        //FIREBASE INSTANCE
         mAuth = FirebaseAuth.getInstance();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
 
-               //CHECK USER
+               //user is the current user
                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
                 if( user != null )
                 {
 
-                    Intent moveToHome = new Intent(RegisterUserActivity.this, InstagramHome.class);
+                    Intent moveToHome = new Intent(RegisterUserActivity.this, MapsActivity.class);
                     moveToHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity( moveToHome );
 
@@ -72,7 +62,7 @@ public class RegisterUserActivity extends AppCompatActivity {
 
         mAuth.addAuthStateListener(mAuthListener);
 
-        //CREATE ON CLICK LISTENER
+        //create account's progress bar
         createAccountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,7 +92,7 @@ public class RegisterUserActivity extends AppCompatActivity {
         mAuth.removeAuthStateListener(mAuthListener);
     }
 
-    //LOGIC FOR CREATING THE USER ACCOUNT
+    //creating user account
     private void createUserAccount() {
 
         String emailUser, passUser;
@@ -110,6 +100,7 @@ public class RegisterUserActivity extends AppCompatActivity {
         emailUser = userEmailCreateEditText.getText().toString().trim();
         passUser = userPassWordCreateEditText.getText().toString().trim();
 
+        //create user accounts using firebase Auth if password/email is present
         if( !TextUtils.isEmpty(emailUser) && !TextUtils.isEmpty(passUser))
         {
 
@@ -123,7 +114,7 @@ public class RegisterUserActivity extends AppCompatActivity {
                         Toast.makeText(RegisterUserActivity.this, "Account created Success", Toast.LENGTH_LONG).show();
                         mProgressDialog.dismiss();
 
-                        Intent moveToHome = new Intent(RegisterUserActivity.this, InstagramHome.class);
+                        Intent moveToHome = new Intent(RegisterUserActivity.this, MapsActivity.class);
                         moveToHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity( moveToHome );
 

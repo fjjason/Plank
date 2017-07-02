@@ -19,22 +19,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.chen.hanlin.plank.instagramposthome.InstagramHome;
 import com.chen.hanlin.plank.MapsActivity;
 
 
 public class MainActivity extends AppCompatActivity {
-
-    //FIELDS FOR VIEWS AND WIDGETS
+    //set up firebase auth, progress bar, view
     EditText userEmailEditText, userPasswordEditText;
     LinearLayout loginLayoutBtn, createAccountLayoutBtn;
-
-    //FIREBASE AUTHENTICATION FIELDS
+    ProgressDialog mProgressDialog;
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
-
-    //PROGRESS DIALOG
-    ProgressDialog mProgressDialog;
 
 
     @Override
@@ -45,17 +39,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //ASSIGN ID
         userEmailEditText = (EditText) findViewById(R.id.emailLoginEditText);
         userPasswordEditText = (EditText) findViewById(R.id.passwordLoginEditText);
-
         loginLayoutBtn = (LinearLayout) findViewById(R.id.loginButtonMain);
         createAccountLayoutBtn = (LinearLayout) findViewById(R.id.createAccountButtonMain);
 
-        //PROGRESS DIALOG CONTEXT
         mProgressDialog = new ProgressDialog(this);
 
-        //FIREBASE AUTHENTICATION INSTANCES
+        //make firebase auth
         mAuth = FirebaseAuth.getInstance();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -68,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 if( user != null )
                 {
 
+                    //after log in, go to maps
                     Intent moveToHome = new Intent(MainActivity.this, MapsActivity.class);
                     moveToHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(moveToHome);
@@ -80,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth.addAuthStateListener(mAuthListener);
 
 
-        //SET ON CLICK LISTENER ON OUR CREATE ACCOUNT LAYOUT BUTTON
+        //set on click listener for register activity
         createAccountLayoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //SET ON CLICK LISTENER FOR LOGIN BTN
+        //make progress bar
         loginLayoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         userEmail = userEmailEditText.getText().toString().trim();
         userPassword = userPasswordEditText.getText().toString().trim();
 
+        //log in and make sure email/password is present/valid
         if( !TextUtils.isEmpty(userEmail) && !TextUtils.isEmpty(userPassword))
         {
 
@@ -156,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
         }else
         {
 
+            //null string entries
             Toast.makeText(MainActivity.this, "Please enter user email and password", Toast.LENGTH_LONG).show();
             mProgressDialog.dismiss();
 
